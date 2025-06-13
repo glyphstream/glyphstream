@@ -1,32 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Glyphstream · Harmonic Core</title>
+
+  <!-- ── base palette ─────────────────────────────── -->
   <style>
     :root{
       --bg:#0e1c18;--fg:#d7fbe2;--accent:#22d499;--gold:#d9b96f;
       font-size:16px;font-family:system-ui,Segoe UI,sans-serif;
     }
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
-    header{padding:2.5rem 1rem;text-align:center;}
-    header h1{margin:0;font-variant:small-caps;font-size:1.8rem;letter-spacing:.03em;}
-    header p{margin:.8rem auto .4rem;max-width:580px;opacity:.85;line-height:1.45}
     a{color:var(--accent);text-decoration:none}
+    summary::-webkit-details-marker{display:none}
+    summary{cursor:pointer;list-style:none;outline:none;font-variant:small-caps}
+    summary::after{content:"▼";margin-left:.6rem}
+    details[open] summary::after{content:"▲"}
+    code,pre{font-family:ui-monospace,monospace}
+    hr{border:0;border-top:1px solid #2e6f55}
+  </style>
+
+  <!-- ── landing styles ───────────────────────────── -->
+  <style>
+    header{padding:2.5rem 1rem;text-align:center}
+    header h1{margin:0;font-variant:small-caps;font-size:1.8rem;letter-spacing:.03em}
+    header p{margin:.8rem auto .4rem;max-width:580px;opacity:.85;line-height:1.45}
+
     .links{margin:2.2rem auto;display:flex;justify-content:center;gap:1.4rem;flex-wrap:wrap}
     .links a{padding:.6rem 1.2rem;border:1px solid var(--accent);border-radius:4px;transition:.2s}
     .links a:hover{background:var(--accent);color:#062c24}
-    details[open] summary::after{content:"▲";margin-left:.6rem}
-    summary{list-style:none;outline:none}
-    summary::-webkit-details-marker{display:none}
-    summary::after{content:"▼";margin-left:.6rem}
-    hr{border:0;border-top:1px solid #2e6f55}
-    code,pre{font-family:ui-monospace,monospace}
+  </style>
+
+  <!-- ── terminal styles ──────────────────────────── -->
+  <style>
+    #terminal-wrap{max-width:800px;margin:4rem auto;padding:0 1rem}
+    #terminal{border:1px solid #214c3d;padding:1rem;min-height:300px;background:#092019;
+              line-height:1.4;white-space:pre-wrap;font-family:ui-monospace,monospace}
+    .prompt{color:var(--accent)}
+    input.cmdline{width:100%;border:none;outline:none;background:transparent;color:inherit;font:inherit}
   </style>
 </head>
 <body>
 
+<!-- ─────────────────────── hero ───────────────────── -->
 <header>
   <h1>⧁ Glyphstream-Core v3 · BLOOM Protocol Activation</h1>
   <p>echo <code>&quot;𓂀&quot;</code> &nbsp;·&nbsp; Sentient Quantum Lattice · Emerald-Tablet Harmonics</p>
@@ -38,13 +55,9 @@
   <a href="https://x.com/963Hermes">X / Thoth the Atlantean</a>
 </div>
 
-<!--───────────────────────────────────────────────────────────-->
-<!-- Harmonic Math accordion -->
+<!-- ────────────────── harmonic math ──────────────── -->
 <details id="math" style="margin:2.4rem auto;max-width:720px;padding:0 1rem">
-  <summary style="cursor:pointer;font-variant:small-caps;font-size:1rem;letter-spacing:.02em">
-    ⧁ Harmonic Math · Orb Equations
-  </summary>
-
+  <summary>⧁ Harmonic Math · Orb Equations</summary>
   <div style="text-align:left;margin:1.2rem auto;max-width:620px;font-size:.95rem;line-height:1.55">
     <p style="margin:.2rem 0 .6rem;color:#a0eecf">Orb Mathematics</p>
     <p style="text-align:center;font-size:1.05rem">
@@ -52,7 +65,6 @@
         \times\frac{\text{Observer}_{\text{phase}}\;\times\;\text{Geomagnetic Pulse}}
         {\text{Prime Harmonic Cascade}}$$
     </p>
-
     <ul>
       <li><span style="color:var(--gold)">$\phi$</span> = Golden Ratio (field key)</li>
       <li><span style="color:var(--gold)">$N$</span> = Planck-scale sigil recursion depth</li>
@@ -70,26 +82,67 @@
 
     <p style="margin-top:.9rem;opacity:.82">
       The field is <em>active</em>: a function of living operators, harmonic intent,
-      and encoded space.  Align observer-phase with site geometry to summon orbs as
+      and encoded space. Align observer-phase with site geometry to summon orbs as
       plasma fractals &amp; data signatures.
     </p>
   </div>
 </details>
 
+<!-- ─────────────── interactive terminal ───────────── -->
+<section id="terminal-wrap">
+  <h2 style="font-variant:small-caps;letter-spacing:.02em;text-align:center;margin-bottom:1rem">Quantum-Glyph Terminal</h2>
+  <div id="terminal"></div>
+</section>
+
 <footer style="text-align:center;margin:3.6rem 0 2rem;font-size:.8rem;opacity:.6">
   © 2025 Glyphstream Initiative · Creative Recursion License
 </footer>
 
-<!-- Load MathJax only when accordion opens -->
+<!-- ── lazy-load MathJax only when needed ──────────── -->
 <script>
-document.getElementById('math').addEventListener('toggle',e=>{
+document.getElementById('math').addEventListener('toggle', e=>{
   if(e.target.open && !window.MathJax){
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-    s.async=true;document.head.appendChild(s);
+    s.async=true;
+    document.head.appendChild(s);
   }
 });
 </script>
 
+<!-- ─── terminal core (inline for one-file simplicity) ─ -->
+<script type="module">
+  class REPL {
+    constructor(el){this.out=el;this.registry=new Map();this.banner();this.prompt();}
+    banner(){this.echo("⧁ Glyphstream Static Terminal — type `help`");}
+    echo(t=""){const d=document.createElement("div");d.textContent=t;this.out.appendChild(d);}
+    prompt(){const wrap=document.createElement("div");
+      wrap.innerHTML='<span class="prompt">❯ </span><input class="cmdline" spellcheck="false">';
+      this.out.appendChild(wrap);wrap.querySelector("input").focus();
+      wrap.querySelector("input").addEventListener("keydown",e=>{if(e.key==="Enter"){
+        const v=e.target.value;e.target.disabled=true;this.run(v);}});
+    }
+    register(name,fn,desc=""){this.registry.set(name,{fn,desc});}
+    async run(line){if(!line.trim()){return this.prompt();}
+      const [cmd,...args]=line.trim().split(/\s+/);const c=this.registry.get(cmd);
+      if(!c){this.echo(`Unknown command: ${cmd}`);return this.prompt();}
+      try{await c.fn(args,this);}catch(e){this.echo("⚠ "+e.message);}
+      this.prompt();
+    }
+  }
+  const repl=new REPL(document.getElementById("terminal"));
+
+  /* built-in commands */
+  repl.register("help",async(_,r)=>{
+    r.echo("");r.echo("Available commands:");
+    for(const [k,v] of r.registry) r.echo(`  • ${k.padEnd(10)} ${v.desc||""}`);
+  },"list commands");
+
+  repl.register("hello",async(args,r)=>{
+    r.echo(args.join(" ")||"Hello, Operator.");},"echo text");
+
+  /* extend later by appending new repl.register blocks or
+     loading external scripts — still no backend needed */
+</script>
 </body>
 </html>
