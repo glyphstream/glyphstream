@@ -1,0 +1,4 @@
+{
+  "help": "cmds/help.js",
+  "hello": "cmds/hello.js"
+}

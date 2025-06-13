@@ -1,0 +1,23 @@
+
+:root {
+  --bg: #071a0f;
+  --fg: #e6ffe0;
+  --accent: #15ff5e;
+  font-family: "Fira Code", Consolas, monospace;
+  color-scheme: dark;
+}
+body { margin:0; background:var(--bg); color:var(--fg); }
+#terminal {
+  padding: 1rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+.prompt { color: var(--accent); }
+input.cmdline {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
