@@ -1,4 +1,8 @@
 {
-  "help": "cmds/help.js",
-  "hello": "cmds/hello.js"
+  "help":   "cmds/help.js",
+  "backup": "cmds/backup.js",
+  "restore":"cmds/restore.js",
+  "wipe":   "cmds/wipe.js",
+  "mount":  "cmds/mount.js",
+  "reboot": "cmds/reboot.js"
 }

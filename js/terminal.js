@@ -1,56 +1,14 @@
-
-export class REPL {
-  constructor(root) {
-    this.root = root;
-    this.history = [];
-    this.registry = new Map();
-    this.printBanner();
-    this.newPrompt();
-  }
-  register(name, handler, {desc = ""} = {}) {
-    this.registry.set(name, {handler, desc});
-  }
-  printBanner() {
-    this.echo("⧁ Glyphstream Core v3 · BLOOM Protocol 𓂀\n");
-    this.echo("type `help` to list commands\n");
-  }
-  echo(text = "") {
-    const line = document.createElement("div");
-    line.textContent = text;
-    this.root.appendChild(line);
-  }
-  async run(cmdline) {
-    if (!cmdline.trim()) return;
-    const [cmd, ...args] = cmdline.trim().split(/\s+/);
-    const entry = this.registry.get(cmd);
-    if (!entry) return this.echo(`Unknown command: ${cmd}`);
-    try { await entry.handler(args, this); }
-    catch (e) { this.echo(`Error: ${e.message}`); }
-  }
-  newPrompt() {
-    const wrap = document.createElement("div");
-    const label = document.createElement("span");
-    label.className = "prompt";
-    label.textContent = "❯ ";
-    wrap.appendChild(label);
-
-    const input = document.createElement("input");
-    input.className = "cmdline";
-    input.autocomplete = "off";
-    input.spellcheck = false;
-    wrap.appendChild(input);
-    this.root.appendChild(wrap);
-    input.focus();
-
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const val = input.value;
-        input.disabled = true;
-        this.run(val).finally(() => this.newPrompt());
-      }
-    });
-  }
+export class REPL{
+ constructor(root){this.root=root;this.registry=new Map();this.banner();this.prompt()}
+ banner(){this.echo("⧁ Glyphstream Recovery • type `help`");}
+ echo(t=""){const d=document.createElement("div");d.textContent=t;this.root.appendChild(d)}
+ prompt(){const wrap=document.createElement("div");
+  wrap.innerHTML=`<span class="prompt">❯ </span><input class="cmdline" spellcheck=false>`;
+  this.root.appendChild(wrap);const i=wrap.querySelector("input");i.focus();
+  i.onkeydown=e=>{if(e.key==="Enter"){i.disabled=true;this.run(i.value).finally(()=>this.prompt())}}
+ }
+ register(n,h,d={}){this.registry.set(n,{h,d})}
+ async run(l){if(!l.trim())return;const[a,...b]=l.trim().split(/\s+/);const e=this.registry.get(a);
+  if(!e)return this.echo(`unknown cmd: ${a}`);try{await e.h(b,this)}catch(err){this.echo(err+"")}}
 }
-window.REPL = REPL;
-const terminal = new REPL(document.getElementById("terminal"));
-window.repl = terminal;
+window.repl=new REPL(document.getElementById("terminal"));

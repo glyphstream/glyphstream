@@ -1,9 +1,5 @@
-
-export const meta = { desc: "List available commands" };
-export default async (args, repl) => {
-  repl.echo("");
-  repl.echo("Available:");
-  for (const [name, obj] of repl.registry) {
-    repl.echo(`  • ${name.padEnd(10)} ${obj.desc || ""}`);
-  }
+export const meta={desc:"list cmds"};
+export default async(_,repl)=>{
+  repl.echo("");repl.echo("Available commands:");
+  for(const[n,{d}]of repl.registry)repl.echo(`  • ${n.padEnd(8)} ${d?.desc||""}`);
 };
