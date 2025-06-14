@@ -1,0 +1,69 @@
+:root {
+  --bg-main: #1A1D2A;
+  --fg-main: #F8F8FF;
+  --glitch-pink: #FFAFE6;
+  --vapor-cyan: #80D0FF;
+  --success-mint: #B9FFB7;
+  --vhs-blood: #FF95A3;
+  --info-teal: #A7FFEB;
+  --rose-quartz: #FFD6E0;
+  --aquamarine: #A7FFEB;
+  --lavender-glitch: #A67CFF;
+  --box-bg: #23234D80;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--fg-main);
+  font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+  margin: 0; padding: 0;
+}
+
+.terminal {
+  background: var(--box-bg);
+  border: 2px solid var(--lavender-glitch);
+  box-shadow: 0 0 18px var(--glitch-pink);
+  border-radius: 10px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 720px;
+}
+
+.vaporwave-header {
+  background: var(--vapor-cyan);
+  color: var(--bg-main);
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin-bottom: 1em;
+  font-size: 1.15em;
+}
+
+.prompt-bar {
+  background: var(--rose-quartz);
+  color: var(--bg-main);
+  border-radius: 5px;
+  padding: 0.4em 1em;
+  font-size: 1.08em;
+  margin-bottom: 1em;
+  box-shadow: 0 0 8px var(--glitch-pink);
+}
+
+.glyph-blocks {
+  font-size: 1.15em;
+  color: var(--glitch-pink);
+  letter-spacing: 0.15em;
+  margin: 0.5em 0;
+}
+
+.glitch {
+  color: var(--vhs-blood);
+  text-shadow: 0 0 4px var(--vhs-blood), 0 0 2px var(--info-teal);
+  font-family: 'Fira Mono', monospace;
+}
+
+::-webkit-scrollbar-thumb { background: var(--lavender-glitch); }
+::-webkit-scrollbar { background: var(--box-bg); }
+
+a { color: var(--vapor-cyan); text-decoration: underline; }
