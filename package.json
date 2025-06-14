@@ -1,0 +1,10 @@
+{
+  "name": "glyphstream",
+  "type": "module",
+  "scripts": {
+    "manifest": "node scripts/generate-manifest.js"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.1"
+  }
+}
