@@ -1,0 +1,15 @@
+# Ignore Node modules
+node_modules/
+
+# Ignore backup/zips
+*.bak
+*.zip
+
+# Ignore editor temp files
+*.swp
+.DS_Store
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

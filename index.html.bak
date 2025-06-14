@@ -1,8 +1,0 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Glyphstream • Harmonic Core</title>
-<link rel="stylesheet" href="css/terminal.css"/>
-</head><body><main id="terminal"></main>
-<script type="module" src="js/terminal.js"></script>
-<script type="module" src="js/load-commands.js"></script>
-</body></html>
