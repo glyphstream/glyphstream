@@ -2,6 +2,7 @@
   "files": [
     "favicon.ico",
     "logo.svg",
+    "manifest.json",
     "styles.css",
     "fonts/rosetta.css"
   ]
