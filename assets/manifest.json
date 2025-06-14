@@ -1,9 +1,12 @@
 {
   "files": [
     "favicon.ico",
+    "fonts.css",
+    "fonts/RosettaMono-Regular.woff",
+    "fonts/RosettaMono-Regular.woff2",
+    "fonts/rosetta.css",
     "logo.svg",
     "manifest.json",
-    "styles.css",
-    "fonts/rosetta.css"
+    "styles.css"
   ]
 }

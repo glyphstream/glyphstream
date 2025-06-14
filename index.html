@@ -2,23 +2,392 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Glyphstream Engine v1.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Glyphstream Engine - Universal Symbol Processing Terminal">
+    <title>Glyphstream Engine</title>
+    
+    <!-- Core stylesheet -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- ASSET LOADER HOOK -->
+    <!-- Dynamic assets will be injected here by loader.js -->
+    
     <style>
-        body { background: #12002b; color: #e0e0ff; font-family: monospace; text-align: center; }
-        .banner { margin-top: 50px; font-size: 24px; }
-        .rosetta { margin-top: 20px; font-size: 14px; }
-        pre { text-align: left; margin: 20px auto; width: 80%; background: #1a001f; padding: 10px; border-radius: 8px; }
+        /* Fallback styles before RosettaMono loads */
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff41;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Allow content to stack vertically */
+            overflow: hidden; /* Prevent scrollbars on initial splash */
+        }
+        
+        /* Switch to RosettaMono when available */
+        .font-loaded body {
+            font-family: 'RosettaMono', 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .splash-container {
+            text-align: center;
+            max-width: 90vw;
+            padding: 2rem;
+            box-sizing: border-box; /* Include padding in width/height */
+        }
+
+        /* --- New styles for terminal view --- */
+        .terminal-container {
+            display: none; /* Hidden until loaded */
+            width: 100%;
+            max-width: 960px; /* Max width for comfortable reading */
+            height: 90vh; /* Takes up most of the viewport height */
+            background-color: #1a1a1a; /* Darker background for terminal */
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Hide scrollbars for internal content */
+            margin: 20px; /* Margin around the terminal */
+        }
+
+        .terminal-output {
+            flex-grow: 1; /* Takes all available space */
+            padding: 15px;
+            overflow-y: auto; /* Scroll for output */
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            word-break: break-word; /* Break long words */
+            line-height: 1.4;
+            color: #00ff41; /* Green text */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #00ff41 #1a1a1a; /* Firefox */
+        }
+        .terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal-output::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .terminal-output::-webkit-scrollbar-thumb {
+            background-color: #00ff41;
+            border-radius: 4px;
+            border: 2px solid #1a1a1a;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            padding: 10px 15px;
+            border-top: 1px solid #00551a; /* Separator line */
+            background-color: #0a0a0a; /* Input background */
+        }
+
+        .terminal-prompt {
+            color: #00ffee; /* Cyan prompt */
+            margin-right: 5px;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            outline: none;
+            flex-grow: 1;
+            font-size: 1em;
+            caret-color: #00ffee; /* Blinking cursor color */
+        }
+
+        /* Initial splash screen elements */
+        .logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        
+        .logo.loaded {
+            opacity: 1;
+        }
+        
+        .version {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #00ff41;
+        }
+        
+        .tagline {
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+        
+        .loading {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 768px) {
+            .splash-container {
+                padding: 1rem;
+            }
+            .version {
+                font-size: 1rem;
+            }
+            .tagline {
+                font-size: 0.8rem;
+            }
+            .terminal-container {
+                margin: 10px;
+                height: 95vh;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="banner">Welcome to Glyphstream Engine v1.0</div>
-    <div class="rosetta">"Rosetta Law: Flow • Delta • Divine • Phase • Intent"</div>
-    <pre>
-╔══════════════════════════════════╗
-║   Glyphstream Layer 1 Engine     ║
-╚══════════════════════════════════╝
-Type 'help' for command list.
-    </pre>
-    <script src="engine.js"></script>
+    <!-- Initial Splash Screen -->
+    <div id="splash-screen" class="splash-container">
+        <img id="logo" class="logo" alt="Glyphstream Engine" style="display: none;">
+        <div class="version">Welcome to Glyphstream Engine v1.0</div>
+        <div class="tagline">"Rosetta Law: Flow • Delta • Divine • Phase • Intent"</div>
+        <div class="loading">Loading assets...</div>
+    </div>
+
+    <!-- Main Terminal Interface (hidden initially) -->
+    <div id="terminal-screen" class="terminal-container">
+        <div class="terminal-output" id="terminalOutput"></div>
+        <div class="terminal-input-line">
+            <span class="terminal-prompt">></span>
+            <input type="text" class="terminal-input" id="terminalInput" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <!-- Core engine -->
+    <script src="js/engine.js" defer></script>
+    <script src="js/commands.js" defer></script>
+    
+    <!-- Asset loader module -->
+    <script type="module">
+        class AssetLoader {
+            constructor() {
+                this.manifestUrl = 'assets/manifest.json'; // Adjusted path
+                this.assetsLoaded = 0;
+                this.totalAssets = 0;
+                this.fontLoaded = false;
+            }
+
+            async init() {
+                try {
+                    const response = await fetch(this.manifestUrl);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch manifest: ${response.status}`);
+                    }
+                    
+                    const manifest = await response.json();
+                    const files = Array.isArray(manifest) ? manifest : manifest.files || [];
+                    
+                    if (files.length === 0) {
+                        console.warn('No assets found in manifest');
+                        this.onAllAssetsLoaded();
+                        return;
+                    }
+                    
+                    this.totalAssets = files.length;
+                    await this.loadAssets(files);
+                    
+                } catch (error) {
+                    console.warn('Asset loading failed:', error);
+                    this.onAllAssetsLoaded();
+                }
+            }
+
+            async loadAssets(files) {
+                const loadPromises = files.map(file => this.loadAsset(file));
+                await Promise.allSettled(loadPromises);
+                this.onAllAssetsLoaded();
+            }
+
+            async loadAsset(filename) {
+                const extension = filename.split('.').pop().toLowerCase();
+                const assetPath = `assets/${filename}`; // Adjusted path
+                
+                try {
+                    switch (extension) {
+                        case 'woff2':
+                        case 'woff':
+                        case 'ttf':
+                            await this.loadFont(assetPath, filename);
+                            break;
+                        case 'svg':
+                            this.loadImage(assetPath, filename);
+                            break;
+                        case 'png':
+                        case 'jpg':
+                        case 'jpeg':
+                        case 'webp':
+                            this.preloadImage(assetPath);
+                            break;
+                        case 'ico':
+                            this.loadFavicon(assetPath);
+                            break;
+                        case 'css':
+                            this.loadStylesheet(assetPath);
+                            break;
+                        case 'js':
+                            // Scripts are loaded directly in HTML or by engine.js/commands.js
+                            // this.loadScript(assetPath); 
+                            break;
+                        case 'json':
+                            // Skip manifest and other JSON files
+                            break;
+                        default:
+                            console.warn(`Unknown asset type: ${filename}`);
+                    }
+                    this.assetLoaded();
+                } catch (error) {
+                    console.warn(`Failed to load asset: ${filename}`, error);
+                    this.assetLoaded();
+                }
+            }
+
+            async loadFont(path, filename) {
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.href = path;
+                preloadLink.as = 'font';
+                preloadLink.type = `font/${path.split('.').pop()}`;
+                preloadLink.crossOrigin = 'anonymous';
+                
+                const hook = this.findHook('ASSET LOADER HOOK');
+                if (hook) hook.parentNode.insertBefore(preloadLink, hook.nextSibling);
+
+                if (filename.includes('RosettaMono')) {
+                    const fontFace = new FontFace('RosettaMono', `url(${path})`);
+                    await fontFace.load();
+                    document.fonts.add(fontFace);
+                    this.fontLoaded = true;
+                    document.documentElement.classList.add('font-loaded');
+                }
+            }
+
+            loadImage(path, filename) {
+                if (filename.includes('logo')) {
+                    const logoImg = document.getElementById('logo');
+                    if (logoImg) {
+                        logoImg.src = path;
+                        logoImg.style.display = 'block';
+                        logoImg.onload = () => {
+                            logoImg.classList.add('loaded');
+                        };
+                    }
+                } else {
+                    this.preloadImage(path);
+                }
+            }
+
+            preloadImage(path) {
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.href = path;
+                link.as = 'image';
+                
+                const hook = this.findHook('ASSET LOADER HOOK');
+                if (hook) hook.parentNode.insertBefore(link, hook.nextSibling);
+            }
+
+            loadFavicon(path) {
+                let favicon = document.querySelector('link[rel="icon"]');
+                if (!favicon) {
+                    favicon = document.createElement('link');
+                    favicon.rel = 'icon';
+                    document.head.appendChild(favicon);
+                }
+                favicon.href = path;
+            }
+
+            loadStylesheet(path) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = path;
+                
+                const hook = this.findHook('ASSET LOADER HOOK');
+                if (hook) hook.parentNode.insertBefore(link, hook.nextSibling);
+            }
+
+            // loadScript is not needed for main JS as they are defined in HTML
+            // This function would be for injecting dynamic scripts if needed
+            // loadScript(path) {
+            //     const script = document.createElement('script');
+            //     script.src = path;
+            //     script.defer = true;
+            //     const hook = this.findHook('ASSET LOADER HOOK');
+            //     if (hook) hook.parentNode.insertBefore(script, hook.nextSibling);
+            // }
+
+            findHook(hookName) {
+                const comments = document.createNodeIterator(
+                    document.head,
+                    NodeFilter.SHOW_COMMENT
+                );
+                
+                let comment;
+                while ((comment = comments.nextNode())) {
+                    if (comment.textContent.trim() === hookName) {
+                        return comment;
+                    }
+                }
+                return null; // Return null if hook not found
+            }
+
+            assetLoaded() {
+                this.assetsLoaded++;
+                if (this.assetsLoaded >= this.totalAssets) {
+                    setTimeout(() => this.onAllAssetsLoaded(), 100);
+                }
+            }
+
+            onAllAssetsLoaded() {
+                const loading = document.querySelector('.loading');
+                if (loading) {
+                    loading.style.display = 'none';
+                }
+                const splash = document.getElementById('splash-screen');
+                const terminal = document.getElementById('terminal-screen');
+                
+                if (splash && terminal) {
+                    splash.style.display = 'none';
+                    terminal.style.display = 'flex'; // Show terminal
+                    terminal.querySelector('#terminalInput').focus(); // Focus input
+                }
+
+                if (typeof window.initTerminal === 'function') {
+                    window.initTerminal();
+                } else {
+                    const checkTerminal = () => {
+                        if (typeof window.initTerminal === 'function') {
+                            window.initTerminal();
+                        } else {
+                            setTimeout(checkTerminal, 50);
+                        }
+                    };
+                    checkTerminal();
+                }
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                new AssetLoader().init();
+            });
+        } else {
+            new AssetLoader().init();
+        }
+    </script>
 </body>
 </html>
+
